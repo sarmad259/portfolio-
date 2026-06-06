@@ -1,0 +1,15 @@
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Keep the resume PDF and original photo out of public repo (optional — remove these lines if you want them public)
+Sarmad_Khan_Resume_90__ATS_Refined.pdf
+WhatsApp Image 2026-05-02 at 6.27.26 PM.jpgg.jpeg

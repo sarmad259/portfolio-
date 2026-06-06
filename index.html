@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muhammad Sarmad Khan — AI Engineer</title>
+  <!-- Favicon — inline SVG spike-mark in coral -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 0L8 16M0 8L16 8M2.343 2.343L13.657 13.657M13.657 2.343L2.343 13.657' stroke='%23cc785c' stroke-width='1.8' stroke-linecap='round' fill='none'/></svg>" />
+  <meta name="description" content="Muhammad Sarmad Khan — AI Engineer and BS AI student at FAST-NUCES. Experience in LLMs, RAG, computer vision, and agentic AI systems. Research at DFKI Germany." />
+  <meta name="author" content="Muhammad Sarmad Khan" />
+  <meta property="og:title" content="Muhammad Sarmad Khan — AI Engineer" />
+  <meta property="og:description" content="AI Engineer with research experience at DFKI Germany. Building intelligent systems across computer vision, LLMs, and agentic AI." />
+  <meta property="og:type" content="website" />
+
+  <!-- Google Fonts — open-source substitutes per DESIGN.md -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <!-- Three.js r134 via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Circular Instagram-style hero photo ── */
+    .hero-illustration-card {
+      background-color: var(--color-surface-dark) !important;
+      border-color: transparent !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      aspect-ratio: 1 / 1 !important;
+      max-width: 420px !important;
+    }
+    .hero-canvas {
+      position: absolute !important;
+      inset: 0 !important;
+      z-index: 1 !important;
+      opacity: 0.55 !important;
+    }
+    .hero-photo-wrap {
+      position: relative !important;
+      z-index: 3;
+      width: 260px;
+      height: 260px;
+      flex-shrink: 0;
+    }
+    /* Outer animated coral ring */
+    .hero-photo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--color-primary), var(--color-accent-teal), var(--color-accent-amber), var(--color-primary));
+      animation: ring-spin 4s linear infinite;
+      z-index: -1;
+    }
+    /* White gap ring between gradient and photo */
+    .hero-photo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: var(--color-surface-dark);
+      z-index: -1;
+    }
+    @keyframes ring-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    /* Outer glow pulse */
+    .hero-photo-wrap {
+      filter: drop-shadow(0 0 18px rgba(204,120,92,0.35));
+      animation: photo-glow 3s ease-in-out infinite;
+    }
+    @keyframes photo-glow {
+      0%, 100% { filter: drop-shadow(0 0 14px rgba(204,120,92,0.3)); }
+      50%       { filter: drop-shadow(0 0 28px rgba(204,120,92,0.55)); }
+    }
+    .hero-photo {
+      width: 260px !important;
+      height: 260px !important;
+      border-radius: 50% !important;
+      object-fit: cover !important;
+      object-position: center top !important;
+      display: block;
+    }
+    .hero-photo-fallback {
+      width: 260px !important;
+      height: 260px !important;
+      border-radius: 50% !important;
+      background: linear-gradient(135deg, var(--color-surface-dark-elevated), var(--color-surface-dark-soft)) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .hero-photo-initials {
+      font-size: 72px !important;
+      color: var(--color-primary) !important;
+    }
+
+    /* ── Certifications section ── */
+    .certs-band {
+      background-color: var(--color-canvas);
+      padding: var(--space-section) 0;
+    }
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+    .cert-card {
+      background-color: var(--color-surface-card);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      border: 1px solid var(--color-hairline-soft);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      transition: transform var(--dur-mid) var(--ease-out),
+                  box-shadow var(--dur-mid) var(--ease-out);
+    }
+    .cert-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(20,20,19,0.08);
+    }
+    .cert-issuer {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .cert-name {
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-ink);
+      line-height: 1.4;
+    }
+    .cert-date {
+      font-size: 13px;
+      color: var(--color-muted);
+    }
+    .cert-id {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-muted-soft);
+      background-color: var(--color-surface-cream-strong);
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+      display: inline-block;
+      margin-top: 2px;
+    }
+
+    /* ── Hero: clean layout without stats bar ── */
+    .hero-intro-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding: var(--space-lg);
+      background-color: var(--color-surface-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-hairline-soft);
+      margin-top: var(--space-xs);
+    }
+    .hero-intro-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .hero-intro-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background-color: var(--color-primary);
+      flex-shrink: 0;
+    }
+    .hero-intro-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-muted);
+    }
+    .hero-intro-text strong { color: var(--color-ink); }
+
+    /* ── Extra experience entries ── */
+    .timeline-item.minor .timeline-marker {
+      width: 16px; height: 16px;
+      background-color: var(--color-surface-dark-elevated);
+      border: 2px solid var(--color-primary);
+      box-shadow: none;
+    }
+
+    @media (max-width: 1024px) {
+      .certs-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .certs-grid { grid-template-columns: 1fr; }
+      .hero-intro-block { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════
+       TOP NAV — top-nav component (DESIGN.md)
+  ════════════════════════════════════════════════ -->
+  <nav class="top-nav" id="top-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-brand" aria-label="Sarmad Khan Home">
+        <svg class="spike-mark" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 0L8 16M0 8L16 8M2.343 2.343L13.657 13.657M13.657 2.343L2.343 13.657"
+                stroke="#cc785c" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="nav-brand-name">Sarmad Khan</span>
+      </a>
+      <nav class="nav-links" id="nav-links" aria-label="Section links">
+        <a href="#about"        class="nav-link" id="nl-about">About</a>
+        <a href="#experience"   class="nav-link" id="nl-experience">Experience</a>
+        <a href="#projects"     class="nav-link" id="nl-projects">Projects</a>
+        <a href="#skills"       class="nav-link" id="nl-skills">Skills</a>
+        <a href="#certifications" class="nav-link" id="nl-certs">Certifications</a>
+        <a href="#contact"      class="nav-link" id="nl-contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="https://github.com/sarmad259" target="_blank" rel="noopener noreferrer"
+           class="btn-text-link" id="nav-github-link">GitHub</a>
+        <a href="mailto:khansardarms@gmail.com" class="btn btn-primary" id="nav-hire-btn">Hire Me</a>
+      </div>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu"
+              aria-expanded="false" aria-controls="mobile-nav-overlay">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay" role="dialog" aria-modal="true">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close navigation">✕</button>
+    <nav class="mobile-nav-links">
+      <a href="#about"          class="mobile-nav-link" id="mnl-about">About</a>
+      <a href="#experience"     class="mobile-nav-link" id="mnl-experience">Experience</a>
+      <a href="#projects"       class="mobile-nav-link" id="mnl-projects">Projects</a>
+      <a href="#skills"         class="mobile-nav-link" id="mnl-skills">Skills</a>
+      <a href="#certifications" class="mobile-nav-link" id="mnl-certs">Certifications</a>
+      <a href="#contact"        class="mobile-nav-link" id="mnl-contact">Contact</a>
+    </nav>
+    <div class="mobile-nav-actions">
+      <a href="mailto:khansardarms@gmail.com" class="btn btn-primary" id="mobile-hire-btn">Hire Me</a>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════
+       HERO BAND — cream canvas · 6/6 grid (DESIGN.md)
+       Clean intro — no inflated stats
+  ════════════════════════════════════════════════ -->
+  <section class="hero-band" id="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-grid">
+
+        <!-- Left Column -->
+        <div class="hero-content">
+          <span class="badge badge-coral" id="availability-badge">✦ Open to Opportunities</span>
+          <h1 class="display-xl hero-title" id="hero-heading">
+            Muhammad<br>Sarmad Khan
+          </h1>
+          <p class="body-md hero-sub">
+            AI Engineer and BS Artificial Intelligence student at FAST-NUCES (2022–2026).
+            I work on computer vision, LLMs, RAG pipelines, and agentic AI systems.
+            I've done research at DFKI Germany and built production AI tools.
+            Based in Pakistan — open to remote and international roles.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects"   class="btn btn-primary"    id="hero-projects-btn">View Projects</a>
+            <a href="https://github.com/sarmad259" target="_blank" rel="noopener noreferrer"
+               class="btn btn-secondary" id="hero-github-btn">GitHub</a>
+            <a href="https://www.linkedin.com/in/sarmad-khan-0071bb24a/" target="_blank" rel="noopener noreferrer"
+               class="btn btn-secondary" id="hero-linkedin-btn">LinkedIn</a>
+          </div>
+          <!-- Clean info block replacing count-up stats -->
+          <div class="hero-intro-block">
+            <div class="hero-intro-row">
+              <span class="hero-intro-dot"></span>
+              <span class="hero-intro-text"><strong>Education:</strong> B.S. Artificial Intelligence — FAST-NUCES, 2022–2026</span>
+            </div>
+            <div class="hero-intro-row">
+              <span class="hero-intro-dot" style="background:#5db8a6"></span>
+              <span class="hero-intro-text"><strong>Research:</strong> DFKI Germany · FAST-NUCES (Quantum Computing)</span>
+            </div>
+            <div class="hero-intro-row">
+              <span class="hero-intro-dot" style="background:#e8a55a"></span>
+              <span class="hero-intro-text"><strong>IELTS:</strong> Academic Band 7.0 &nbsp;·&nbsp; khansardarms@gmail.com</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: circular profile photo on dark card -->
+        <div class="hero-visual">
+          <div class="hero-illustration-card" id="hero-illustration-card" aria-hidden="true">
+            <!-- Three.js Neural Network fills the dark card bg -->
+            <canvas id="hero-canvas" class="hero-canvas"></canvas>
+
+            <!-- Circular photo (Instagram style) -->
+            <div style="position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:20px;">
+              <div class="hero-photo-wrap">
+                <img
+                  src="./profile.jpg"
+                  alt="Muhammad Sarmad Khan — AI Engineer"
+                  class="hero-photo"
+                  id="hero-photo"
+                />
+                <div class="hero-photo-fallback" id="hero-photo-fallback">
+                  <span class="hero-photo-initials">SK</span>
+                </div>
+              </div>
+              <!-- Name + title below circle -->
+              <div style="text-align:center;">
+                <p style="font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--color-on-dark);letter-spacing:-0.3px;line-height:1.2;">Muhammad Sarmad Khan</p>
+                <p style="font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--color-primary);letter-spacing:1px;text-transform:uppercase;margin-top:4px;">AI Engineer · FAST-NUCES</p>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       ABOUT — feature-card 3-up (DESIGN.md)
+       surface-card
+  ════════════════════════════════════════════════ -->
+  <section class="about-band" id="about" aria-labelledby="about-heading">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow">About</span>
+        <h2 class="display-md" id="about-heading">What I do</h2>
+        <p class="body-md section-sub">
+          I work on machine learning and AI systems — from research models to deployed applications.
+        </p>
+      </div>
+      <div class="feature-grid reveal">
+        <article class="feature-card" id="about-card-1">
+          <div class="feature-card-icon" aria-hidden="true">🧠</div>
+          <h3 class="title-md">Computer Vision &amp; Research</h3>
+          <p class="body-sm">Worked as a Research Assistant at DFKI Germany on medical image classification using CNNs, ResNet, and Vision Transformers. Implemented KDLight knowledge distillation to compress vision models for resource-constrained devices. Also assisted research on quantum computing and cybersecurity at FAST-NUCES.</p>
+        </article>
+        <article class="feature-card" id="about-card-2">
+          <div class="feature-card-icon" aria-hidden="true">⚙️</div>
+          <h3 class="title-md">LLMs &amp; RAG Systems</h3>
+          <p class="body-sm">Built an end-to-end RAG pipeline at Owlvest serving users across Discord and LinkedIn. Fine-tuned LLMs for financial domain reasoning. Also built agentic AI workflows using Groq, OpenRouter, and LangChain for professor outreach and form digitization.</p>
+        </article>
+        <article class="feature-card" id="about-card-3">
+          <div class="feature-card-icon" aria-hidden="true">🏗️</div>
+          <h3 class="title-md">Full-Stack AI Applications</h3>
+          <p class="body-sm">Comfortable shipping end-to-end: Django REST APIs, React frontends, PostgreSQL databases, and ML model serving via Flask or ONNX. Built and deployed agri-tech, fintech, and medical AI tools — some currently live on Vercel.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       EXPERIENCE — surface-dark timeline (DESIGN.md)
+       All 7 roles in reverse chronological order
+  ════════════════════════════════════════════════ -->
+  <section class="experience-band" id="experience" aria-labelledby="experience-heading">
+    <canvas id="experience-canvas" class="experience-canvas" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow section-eyebrow-dark">Experience</span>
+        <h2 class="display-md on-dark" id="experience-heading">Where I've worked</h2>
+      </div>
+
+      <div class="timeline reveal" role="list" aria-label="Work experience timeline">
+
+        <!-- 1. DFKI Germany -->
+        <article class="timeline-item" role="listitem" id="exp-dfki">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Oct 2025 – Apr 2026 · 7 mos</span>
+              <span class="timeline-location">🇩🇪 Germany · Remote</span>
+            </div>
+            <h3 class="title-md on-dark">Research Assistant Trainee</h3>
+            <p class="title-sm timeline-company">German Research Center for Artificial Intelligence (DFKI)</p>
+            <ul class="timeline-bullets">
+              <li>Optimized medical image classification models (CNNs, ResNet, Vision Transformers) to improve diagnostic accuracy on clinical datasets</li>
+              <li>Implemented KDLight knowledge distillation framework to compress large vision models for deployment on resource-constrained devices</li>
+              <li>Improved classification accuracy from <strong>92% to 97%</strong> through model tuning and refinement experiments</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">PyTorch</span>
+              <span class="badge badge-pill">CNN</span>
+              <span class="badge badge-pill">ResNet</span>
+              <span class="badge badge-pill">Vision Transformers</span>
+              <span class="badge badge-pill">Knowledge Distillation</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. Teacher Assistant @ FAST-NUCES -->
+        <article class="timeline-item minor" role="listitem" id="exp-ta">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Aug 2025 – Jan 2026 · 6 mos</span>
+              <span class="timeline-location">🇵🇰 Peshawar, Pakistan · On-site</span>
+            </div>
+            <h3 class="title-md on-dark">Teacher Assistant</h3>
+            <p class="title-sm timeline-company">National University of Computer and Emerging Sciences (FAST-NUCES)</p>
+            <ul class="timeline-bullets">
+              <li>Assisted in teaching undergraduate coursework, supporting students with Python programming and course material</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">Teaching</span>
+              <span class="badge badge-pill">Python</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. Undergraduate Research Assistant @ FAST-NUCES -->
+        <article class="timeline-item minor" role="listitem" id="exp-ug-research">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Aug 2025 – Oct 2025 · 3 mos</span>
+              <span class="timeline-location">🇵🇰 Pakistan</span>
+            </div>
+            <h3 class="title-md on-dark">Undergraduate Research Assistant</h3>
+            <p class="title-sm timeline-company">FAST-NUCES — under Dr. Najam Ul Hassan</p>
+            <ul class="timeline-bullets">
+              <li>Contributed to foundational research at the intersection of <strong>quantum computing and cybersecurity</strong></li>
+              <li>Managed experimental design, data preprocessing, and hyperparameter optimization tasks</li>
+              <li>Worked independently on complex computational problems, connecting theoretical concepts with real-world performance metrics</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">Quantum Computing</span>
+              <span class="badge badge-pill">Cybersecurity</span>
+              <span class="badge badge-pill">Research</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Owlvest AI Engineer -->
+        <article class="timeline-item" role="listitem" id="exp-owlvest">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">May 2025 – Dec 2025 · 8 mos</span>
+              <span class="timeline-location">🇵🇰 Islamabad · Part-time Remote</span>
+            </div>
+            <h3 class="title-md on-dark">AI Engineer</h3>
+            <p class="title-sm timeline-company">Owlvest</p>
+            <ul class="timeline-bullets">
+              <li>Built an end-to-end RAG pipeline serving users across Discord and LinkedIn, processing a 10MB knowledge base with sub-second retrieval</li>
+              <li>Fine-tuned LLMs for domain-specific financial reasoning, reducing hallucination rate for active users</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">RAG</span>
+              <span class="badge badge-pill">LLMs</span>
+              <span class="badge badge-pill">LangChain</span>
+              <span class="badge badge-pill">Python</span>
+              <span class="badge badge-pill">Discord API</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. Metrix Co Lead -->
+        <article class="timeline-item minor" role="listitem" id="exp-metrix">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Aug 2024 – Mar 2025 · 8 mos</span>
+              <span class="timeline-location">🇵🇰 Pakistan</span>
+            </div>
+            <h3 class="title-md on-dark">Co Lead</h3>
+            <p class="title-sm timeline-company">Metrix Pakistan</p>
+            <ul class="timeline-bullets">
+              <li>Led a team role at Metrix Pakistan, contributing to organizational and technical initiatives</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">Leadership</span>
+              <span class="badge badge-pill">Team Collaboration</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. Bytewise ML Intern -->
+        <article class="timeline-item" role="listitem" id="exp-bytewise">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Jun 2024 – Sep 2024 · 4 mos</span>
+              <span class="timeline-location">🇵🇰 Islamabad · Remote</span>
+            </div>
+            <h3 class="title-md on-dark">ML Internship</h3>
+            <p class="title-sm timeline-company">Bytewise Limited</p>
+            <ul class="timeline-bullets">
+              <li>Completed structured ML internship — built a pneumonia detection CNN achieving <strong>92% accuracy</strong> on chest X-ray data</li>
+              <li>Worked with PyTorch, applied data augmentation techniques for class imbalance</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">Machine Learning</span>
+              <span class="badge badge-pill">PyTorch</span>
+              <span class="badge badge-pill">Deep Learning</span>
+              <span class="badge badge-pill">CNN</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. Doctor Billing Experts IT Intern -->
+        <article class="timeline-item minor" role="listitem" id="exp-dbe">
+          <div class="timeline-marker" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-meta">
+              <span class="badge badge-pill">Jun 2023 – Aug 2023 · 3 mos</span>
+              <span class="timeline-location">🇺🇸 Modesto, California · Remote</span>
+            </div>
+            <h3 class="title-md on-dark">IT Executive Intern</h3>
+            <p class="title-sm timeline-company">Doctor Billing Experts L.L.C — USA</p>
+            <ul class="timeline-bullets">
+              <li>Worked remotely for a US-based medical billing company, gaining international work experience</li>
+            </ul>
+            <div class="timeline-tags">
+              <span class="badge badge-pill">IT</span>
+              <span class="badge badge-pill">Remote Work</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       PROJECTS — feature-card 2×2 with 3D tilt (DESIGN.md)
+       cream canvas
+  ════════════════════════════════════════════════ -->
+  <section class="projects-band" id="projects" aria-labelledby="projects-heading">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow">Projects</span>
+        <h2 class="display-md" id="projects-heading">Things I've built</h2>
+        <p class="body-md section-sub">
+          End-to-end AI systems — from object detection to agentic workflows, some deployed in production.
+        </p>
+      </div>
+      <div class="projects-grid reveal">
+
+        <!-- Formilate -->
+        <article class="project-card" id="project-card-1" aria-label="Formilate project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div>
+                <span class="badge badge-pill project-status">In Deployment</span>
+                <h3 class="title-md project-title">Formilate</h3>
+                <p class="caption project-sub">AI Form Digitization Pipeline</p>
+              </div>
+              <div class="project-icon" aria-hidden="true">📋</div>
+            </div>
+            <p class="body-sm project-desc">
+              End-to-end pipeline digitizing physical forms using YOLOv11 object detection and a weighted spatial clustering algorithm — improved field extraction accuracy by 16% after dataset expansion. Agentic self-learning system via OpenRouter extracts correction rules into PostgreSQL JSONB. Full-stack: Django REST + React 19, JWT auth, Monaco Editor, ReactFlow. Validated by 250+ property-based tests.
+            </p>
+            <div class="project-tags">
+              <span class="badge badge-pill">YOLOv11</span>
+              <span class="badge badge-pill">ONNX</span>
+              <span class="badge badge-pill">Tesseract</span>
+              <span class="badge badge-pill">GPT-4</span>
+              <span class="badge badge-pill">Django REST</span>
+              <span class="badge badge-pill">React 19</span>
+              <span class="badge badge-pill">PostgreSQL</span>
+            </div>
+            <div class="project-actions">
+              <a href="https://github.com/sarmad259/FYP_WEBSITE" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-secondary btn-sm" id="formilate-github-btn">GitHub →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- AI Academic Headhunter -->
+        <article class="project-card" id="project-card-2" aria-label="AI Academic Headhunter project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div>
+                <span class="badge badge-coral project-status">Live</span>
+                <h3 class="title-md project-title">AI Academic Headhunter</h3>
+                <p class="caption project-sub">Agentic Professor Outreach System</p>
+              </div>
+              <div class="project-icon" aria-hidden="true">🎯</div>
+            </div>
+            <p class="body-sm project-desc">
+              Agentic pipeline that analyzes a candidate's resume and portfolio to find research alignment, then queries Semantic Scholar API for each professor's most-cited recent papers. Groq LLM generates personalized outreach emails (under 150 words) with human-in-the-loop review before dispatch via Brevo API. Modular CLI: draft → review → send.
+            </p>
+            <div class="project-tags">
+              <span class="badge badge-pill">Python</span>
+              <span class="badge badge-pill">Groq LLM</span>
+              <span class="badge badge-pill">Semantic Scholar API</span>
+              <span class="badge badge-pill">Brevo API</span>
+              <span class="badge badge-pill">Agentic AI</span>
+            </div>
+            <div class="project-actions">
+              <a href="https://head-hunter-deployment.vercel.app/" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-primary btn-sm" id="headhunter-demo-btn">Live Demo →</a>
+              <a href="https://github.com/sarmad259/Agentic-Academic-Headhunter" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-secondary btn-sm" id="headhunter-github-btn">GitHub →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Kisan Saathi -->
+        <article class="project-card" id="project-card-3" aria-label="Kisan Saathi project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div>
+                <span class="badge badge-coral project-status">Live</span>
+                <h3 class="title-md project-title">Kisan Saathi</h3>
+                <p class="caption project-sub">Agricultural Advisory Platform</p>
+              </div>
+              <div class="project-icon" aria-hidden="true">🌱</div>
+            </div>
+            <p class="body-sm project-desc">
+              Agri-tech platform with a Gemini 1.5 Flash advisory chatbot and computer vision-based plant disease detection for smallholder farmers. Node.js backend with RESTful APIs serving crop health recommendations and disease alerts from user-uploaded field images.
+            </p>
+            <div class="project-tags">
+              <span class="badge badge-pill">React</span>
+              <span class="badge badge-pill">Node.js</span>
+              <span class="badge badge-pill">Gemini 1.5 Flash</span>
+              <span class="badge badge-pill">Computer Vision</span>
+              <span class="badge badge-pill">REST API</span>
+            </div>
+            <div class="project-actions">
+              <a href="https://eco-farm-tech-one.vercel.app/demo" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-primary btn-sm" id="kisan-demo-btn">Live Demo →</a>
+              <a href="https://github.com/sarmad259/eco-farm-tech" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-secondary btn-sm" id="kisan-github-btn">GitHub →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pneumonia Detector -->
+        <article class="project-card" id="project-card-4" aria-label="Pneumonia Detector project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div>
+                <span class="badge badge-pill project-status">2024</span>
+                <h3 class="title-md project-title">Pneumonia Detector</h3>
+                <p class="caption project-sub">Medical Image Classifier</p>
+              </div>
+              <div class="project-icon" aria-hidden="true">🫁</div>
+            </div>
+            <p class="body-sm project-desc">
+              CNN-based chest X-ray classifier achieving 92% accuracy using PyTorch. Data augmentation applied to handle class imbalance. Deployed via Flask REST API with real-time inference visualization — outputs predictions with confidence scores for clinical review.
+            </p>
+            <div class="project-tags">
+              <span class="badge badge-pill">Python</span>
+              <span class="badge badge-pill">PyTorch</span>
+              <span class="badge badge-pill">CNN</span>
+              <span class="badge badge-pill">Flask</span>
+              <span class="badge badge-pill">Medical Imaging</span>
+            </div>
+            <div class="project-actions">
+              <a href="https://github.com/sarmad259/Pneumonia-Detector-Using-CNN" target="_blank" rel="noopener noreferrer"
+                 class="btn btn-secondary btn-sm" id="pneumonia-github-btn">GitHub →</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       SKILLS — connector-tile grid (DESIGN.md)
+       surface-card · Three.js particle field
+  ════════════════════════════════════════════════ -->
+  <section class="skills-band" id="skills" aria-labelledby="skills-heading">
+    <canvas id="skills-canvas" class="skills-canvas" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow">Skills</span>
+        <h2 class="display-md" id="skills-heading">Tools of the trade</h2>
+      </div>
+      <div class="skills-grid reveal">
+        <div class="skill-category" id="skills-languages">
+          <h3 class="title-sm skill-category-label">Languages</h3>
+          <div class="skill-tiles">
+            <div class="connector-tile">Python</div>
+            <div class="connector-tile">JavaScript</div>
+            <div class="connector-tile">C/C++</div>
+            <div class="connector-tile">SQL</div>
+            <div class="connector-tile">Assembly</div>
+          </div>
+        </div>
+        <div class="skill-category" id="skills-ai">
+          <h3 class="title-sm skill-category-label">AI / ML</h3>
+          <div class="skill-tiles">
+            <div class="connector-tile">PyTorch</div>
+            <div class="connector-tile">TensorFlow</div>
+            <div class="connector-tile">LLMs</div>
+            <div class="connector-tile">RAG</div>
+            <div class="connector-tile">Agentic AI</div>
+            <div class="connector-tile">CNN</div>
+            <div class="connector-tile">Knowledge Distillation</div>
+            <div class="connector-tile">Computer Vision</div>
+            <div class="connector-tile">Deep Learning</div>
+          </div>
+        </div>
+        <div class="skill-category" id="skills-web">
+          <h3 class="title-sm skill-category-label">Web &amp; APIs</h3>
+          <div class="skill-tiles">
+            <div class="connector-tile">Django REST</div>
+            <div class="connector-tile">React</div>
+            <div class="connector-tile">Node.js</div>
+            <div class="connector-tile">PostgreSQL</div>
+            <div class="connector-tile">OpenRouter</div>
+            <div class="connector-tile">LangChain</div>
+            <div class="connector-tile">Flask</div>
+          </div>
+        </div>
+        <div class="skill-category" id="skills-tools">
+          <h3 class="title-sm skill-category-label">Tools &amp; Infra</h3>
+          <div class="skill-tiles">
+            <div class="connector-tile">Git</div>
+            <div class="connector-tile">Docker</div>
+            <div class="connector-tile">Linux</div>
+            <div class="connector-tile">ONNX</div>
+            <div class="connector-tile">Vercel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       ACHIEVEMENTS — surface-dark (DESIGN.md)
+  ════════════════════════════════════════════════ -->
+  <section class="achievements-band" id="achievements" aria-labelledby="achievements-heading">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow section-eyebrow-dark">Recognition</span>
+        <h2 class="display-md on-dark" id="achievements-heading">Awards &amp; Recognition</h2>
+      </div>
+      <div class="achievements-grid reveal">
+        <article class="achievement-card" id="achievement-1">
+          <div class="achievement-rank" aria-label="First place">🥇</div>
+          <div class="achievement-body">
+            <span class="badge badge-coral">2025</span>
+            <h3 class="title-md on-dark">1st Place — KPITB Digital Payment Challenge</h3>
+            <p class="body-sm on-dark-soft">Led a fintech AI solution at the Khyber Pakhtunkhwa IT Board challenge, building and presenting a complete AI-powered digital payment system.</p>
+          </div>
+        </article>
+        <article class="achievement-card" id="achievement-2">
+          <div class="achievement-rank" aria-label="Finalist">🎯</div>
+          <div class="achievement-body">
+            <span class="badge badge-pill">2025</span>
+            <h3 class="title-md on-dark">Finalist — NICAT Hackathon</h3>
+            <p class="body-sm on-dark-soft">Built AgriPredict, an AI advisory tool for Pakistani farmers, as a finalist at the National ICT Awards &amp; Technology hackathon.</p>
+          </div>
+        </article>
+        <article class="achievement-card" id="achievement-3">
+          <div class="achievement-rank" aria-label="IELTS">📄</div>
+          <div class="achievement-body">
+            <span class="badge badge-pill">English</span>
+            <h3 class="title-md on-dark">IELTS Academic — Band 7.0</h3>
+            <p class="body-sm on-dark-soft">Certified English proficiency at professional level, enabling collaboration with international teams and research institutions.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       CERTIFICATIONS — canvas (DESIGN.md)
+       cream canvas surface
+  ════════════════════════════════════════════════ -->
+  <section class="certs-band" id="certifications" aria-labelledby="certs-heading">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="caption-uppercase section-eyebrow">Certifications</span>
+        <h2 class="display-md" id="certs-heading">Licences &amp; Certifications</h2>
+      </div>
+      <div class="certs-grid reveal">
+
+        <article class="cert-card" id="cert-1">
+          <span class="cert-issuer">Bytewise Limited</span>
+          <span class="cert-name">Bytewise Fellowship — Batch 3</span>
+          <span class="cert-date">Issued May 2024</span>
+          <span class="cert-id">8e2925e5-db4f-4701-beb9-dab7b960c851</span>
+          <div style="margin-top:var(--space-xs)">
+            <span class="badge badge-pill">Machine Learning</span>
+            <span class="badge badge-pill" style="margin-left:4px">Deep Learning</span>
+          </div>
+        </article>
+
+        <article class="cert-card" id="cert-2">
+          <span class="cert-issuer">DeepLearning.AI</span>
+          <span class="cert-name">Generative AI for Everyone</span>
+          <span class="cert-date">Issued Nov 2023</span>
+          <span class="cert-id">FE5ZKTVQLDTN</span>
+          <div style="margin-top:var(--space-xs)">
+            <span class="badge badge-pill">Generative AI</span>
+            <span class="badge badge-pill" style="margin-left:4px">LLMs</span>
+          </div>
+        </article>
+
+        <article class="cert-card" id="cert-3">
+          <span class="cert-issuer">Google</span>
+          <span class="cert-name">Google AI Essentials</span>
+          <span class="cert-date">Issued Jun 2024</span>
+          <span class="cert-id">WWQ7ZHDQJFX3</span>
+          <div style="margin-top:var(--space-xs)">
+            <span class="badge badge-pill">AI</span>
+            <span class="badge badge-pill" style="margin-left:4px">Google</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       CTA BAND — cta-band-coral (DESIGN.md)
+       coral background · Three.js geometric shapes
+  ════════════════════════════════════════════════ -->
+  <section class="cta-band" id="contact" aria-labelledby="cta-heading">
+    <canvas id="cta-canvas" class="cta-canvas" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="cta-inner reveal">
+        <span class="caption-uppercase cta-eyebrow">Get in Touch</span>
+        <h2 class="cta-headline" id="cta-heading">Open to Opportunities</h2>
+        <p class="body-md cta-sub">
+          Looking for remote AI engineering roles, research collaborations, or international positions.
+          Feel free to reach out via email or LinkedIn.
+        </p>
+        <div class="cta-actions">
+          <a href="mailto:khansardarms@gmail.com"
+             class="btn btn-secondary-on-dark" id="cta-email-btn">
+            khansardarms@gmail.com
+          </a>
+          <a href="https://www.linkedin.com/in/sarmad-khan-0071bb24a/"
+             target="_blank" rel="noopener noreferrer"
+             class="btn btn-secondary-on-dark" id="cta-linkedin-btn">LinkedIn →</a>
+          <a href="https://github.com/sarmad259"
+             target="_blank" rel="noopener noreferrer"
+             class="btn btn-secondary-on-dark" id="cta-github-btn">GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════
+       FOOTER — footer component (DESIGN.md)
+       surface-dark
+  ════════════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <svg class="spike-mark" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 0L8 16M0 8L16 8M2.343 2.343L13.657 13.657M13.657 2.343L2.343 13.657"
+                    stroke="#cc785c" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span class="footer-brand-name">Sarmad Khan</span>
+          </div>
+          <p class="footer-tagline">AI Engineer · FAST-NUCES · Pakistan</p>
+          <p class="footer-tagline" style="margin-top:4px;font-size:13px;">IELTS Academic Band 7.0 · Open to Remote &amp; International</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4 class="footer-col-title">Work</h4>
+            <a href="#experience"     class="footer-link" id="footer-exp-link">Experience</a>
+            <a href="#projects"       class="footer-link" id="footer-proj-link">Projects</a>
+            <a href="#achievements"   class="footer-link" id="footer-ach-link">Awards</a>
+            <a href="#certifications" class="footer-link" id="footer-certs-link">Certifications</a>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Connect</h4>
+            <a href="https://github.com/sarmad259" target="_blank" rel="noopener noreferrer"
+               class="footer-link" id="footer-github-link">GitHub ↗</a>
+            <a href="https://www.linkedin.com/in/sarmad-khan-0071bb24a/" target="_blank" rel="noopener noreferrer"
+               class="footer-link" id="footer-linkedin-link">LinkedIn ↗</a>
+            <a href="mailto:khansardarms@gmail.com"
+               class="footer-link" id="footer-email-link">Email ↗</a>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Education</h4>
+            <span class="footer-text">B.S. Artificial Intelligence</span>
+            <span class="footer-text">FAST-NUCES · 2022–2026</span>
+            <span class="footer-text" style="margin-top:4px;color:#cc785c;">IELTS Band 7.0</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Muhammad Sarmad Khan · Built following the Claude design system</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    /* ── Photo show/hide logic — runs immediately after DOM ── */
+    (function() {
+      var img = document.getElementById('hero-photo');
+      var fallback = document.getElementById('hero-photo-fallback');
+      if (!img || !fallback) return;
+      img.onload  = function() { fallback.style.display = 'none'; img.style.display = 'block'; };
+      img.onerror = function() { img.style.display = 'none'; fallback.style.display = 'flex'; };
+      /* Force re-check if already cached */
+      if (img.complete && img.naturalWidth > 0) {
+        fallback.style.display = 'none';
+        img.style.display = 'block';
+      } else if (img.complete) {
+        img.style.display = 'none';
+        fallback.style.display = 'flex';
+      }
+    })();
+  </script>
+</body>
+</html>
